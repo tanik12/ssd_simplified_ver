@@ -1,6 +1,8 @@
 import numpy as np
 import time
 import pandas as pd
+import sys
+sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
 import cv2
 import matplotlib.pyplot as plt
 import torch
@@ -58,11 +60,12 @@ if __name__ == "__main__":
     #SSDネットワークモデル
     net = SSD(phase="inference", cfg=ssd_cfg)
 
-    device = torch.device('cpu')
+    #device = torch.device('cpu')
 
     #SSDの学習済み重みを設定
-    net_weights = torch.load('./weights/ssd300_600.pth', map_location=device)
+    #net_weights = torch.load('./weights/ssd300_600.pth', map_location=device)
     #net_weights = torch.load('./weights/ssd300_50.pth', map_location={'cuda0': 'cpu'})
+    net_weights = torch.load('./weights/ssd300_1.pth', map_location={'cuda0': 'cpu'})
 
     #net_weights = torch.load('./weights/ssd300_mAP_77.43_v2.pth', map_location={'cuda0': 'cpu'})
     ###net_weights = torch.load('./weights/ssd300_mAP_77.43_v2.pth', map_location=device)
