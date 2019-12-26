@@ -74,7 +74,7 @@ def nm_suppression(boxes, scores, overlap=0.45, top_k=200):
         count += 1
 
         #最後のBBoxになった場合は、ループを抜ける
-        if idx.size(0) == 1;
+        if idx.size(0) == 1:
             break
 
         #現在のconf最大のindexをkeepに格納したいので、idxを減らす

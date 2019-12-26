@@ -22,6 +22,7 @@ from extra import make_extras
 from l2norm import L2Norm
 from loc_conf import make_loc_conf
 from default_box import DBox
+from detect import Detect
 
 #SSDクラスを作成する
 class SSD(nn.Module):

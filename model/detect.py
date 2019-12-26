@@ -9,7 +9,10 @@ import torch.optim as optim
 import torch.utils.data as data
 import torchvision
 from torchvision import models, transforms
+from torch.autograd import Function
 
+from decode import decode
+from non_maximum_suppression import nm_suppression 
 import sys
 sys.path.append('../')
 
@@ -17,7 +20,7 @@ from utils.data_augumentation import Compose, ConvertFromInts, ToAbsoluteCoords,
      PhotometricDistort, Expand, RandomSampleCrop, RandomMirror, ToPercentCoords, Resize, SubtractMeans
 
 #SSDの推論時にconfとlocの出力から、被りを除去したBBoxを出力する
-class Detect(Functional):
+class Detect(Function):
     def __init__(self, conf_thresh=0.01, top_k=200, nms_thresh=0.45):
         self.softmax = nn.Softmax(dim=-1) #confをソフトマックス関数で正規化するために用意
         self.conf_thresh = conf_thresh #confがconf_thresh=0.01より高いDBoxのみを扱う
@@ -63,7 +66,7 @@ class Detect(Functional):
 
             """### Step1 ###"""
             #locとDBoxから修正したBBox[xmin, ymin, xmax, ymax]を求める
-            decode_boxes = decode(loc_data[i], dbox_list)
+            decoded_boxes = decode(loc_data[i], dbox_list)
 
             #confのコピーを作成
             conf_scores = conf_preds[i].clone()
@@ -88,7 +91,11 @@ class Detect(Functional):
                 if scores.nelement() == 0: #nelementで要素数の合計を求める
                     continue
 
-                #c_maskをdecoded_boxesに適応します
+                #c_maskを、decoded_boxesに適応できるユニサイズを変更します
+                l_mask = c_mask.unsqueeze(1).expand_as(decoded_boxes)
+                #l_mask:torch.Size([8732, 4])
+
+                #l_maskをdecoded_boxesに適応します
                 boxes = decoded_boxes[l_mask].view(-1, 4)
                 #decoded_boxes[l_mask]で1次元になってしまうので、
                 #viewで(閾値を超えたBBox数, 4)サイズに変形し直す
@@ -100,7 +107,7 @@ class Detect(Functional):
                 #ids : confの降順にNon-Maximum Supressionを通過したBBoxの数
 
                 #outputにNon-Maxmum Supressionを抜けた結果を格納
-                output[i, cl, :count] = torch.cat((scores[ids[:count]].unsqueeze(1), boxes[ids[ids[:count]]), 1)
+                output[i, cl, :count] = torch.cat((scores[ids[:count]].unsqueeze(1), boxes[ids[:count]]), 1)
                 """ ############ """
 
         return output #torch.Size([1, 21, 200, 5])

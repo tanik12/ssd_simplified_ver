@@ -53,6 +53,7 @@ def train_model(net, dataloaders_dict, criterion, optimizer, num_epochs):
 
     #epochのループ
     for epoch in range(num_epochs+1):
+    #for epoch in range(2):
         #開始時刻を保存
         t_epoch_start = time.time()
         t_iter_start = time.time()
@@ -144,7 +145,7 @@ def train_model(net, dataloaders_dict, criterion, optimizer, num_epochs):
 
 if __name__ == "__main__":
     #画像の読み込み
-    rootpath = "/home/gisen/git/pytorch_advanced/2_objectdetection/data/VOCdevkit/VOC2012/"
+    rootpath = "/Users/gisen/git/pytorch_advanced/2_objectdetection/data/VOCdevkit/VOC2012/"
     train_img_list, train_anno_list, val_img_list, val_anno_list = make_datapath_list(rootpath)
 
     #アノテーションをリストに
@@ -217,5 +218,6 @@ if __name__ == "__main__":
     optimizer = optim.SGD(net.parameters(), lr=1e-3, momentum=0.9, weight_decay=5e-4)
 
     #学習・検証を実行する
-    num_epochs = 12000
+    num_epochs = 300
+    #num_epochs = 2
     train_model(net, dataloaders_dict, criterion, optimizer, num_epochs=num_epochs)
