@@ -145,13 +145,16 @@ def train_model(net, dataloaders_dict, criterion, optimizer, num_epochs):
 
 if __name__ == "__main__":
     #画像の読み込み
-    rootpath = "/home/gisen/git/pytorch_advanced/2_objectdetection/data/VOCdevkit/VOC2012/"
+    #rootpath = "/home/gisen/git/pytorch_advanced/2_objectdetection/data/VOCdevkit/VOC2012/"
+    rootpath = "/home/gisen/data_own/VOCdevkit/VOC_own/"
     train_img_list, train_anno_list, val_img_list, val_anno_list = make_datapath_list(rootpath)
 
     #アノテーションをリストに
-    voc_classes = ['aeroplane','bicycle','bird','boat','bottle','bus',\
-                   'car','cat','chair','cow','diningtable','dog','horse',\
-                   'motorbike','person','pottedplant','sheep','sofa','train','tvmonitor']
+    #voc_classes = ['aeroplane','bicycle','bird','boat','bottle','bus',\
+    #               'car','cat','chair','cow','diningtable','dog','horse',\
+    #               'motorbike','person','pottedplant','sheep','sofa','train','tvmonitor']
+
+    voc_classes = ["traffic signal", "pedestrian signal", "person", "bicycle", "car", "motorbike", "bus", "truck", "dog", "cat", "bird"]
 
     color_mean = (104, 117, 123) #(BGR)の色の平均値
     input_size = 300
@@ -178,7 +181,8 @@ if __name__ == "__main__":
 
     #SSD300の設定
     ssd_cfg = {
-            'num_classes': 21, #背景クラスを含めた合計クラス数
+            #'num_classes': 21, #背景クラスを含めた合計クラス数
+            'num_classes': 12, #背景クラスを含めた合計クラス数
             'input_size': 300, #画像の入力サイズ
             'bbox_aspect_num': [4, 6, 6, 6, 4, 4], #出力するDBoxのアスペクト比の種類
             'feature_maps': [38, 19, 10, 5, 3, 1], #各sourceの画像サイズ

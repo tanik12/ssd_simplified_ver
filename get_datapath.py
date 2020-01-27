@@ -52,7 +52,8 @@ def make_datapath_list(rootpath):
         img_path = (imgpath_template % file_id) #画像のパス
         anno_path = (annopath_template % file_id) #アノテーションのパス
         train_img_list.append(img_path) #listに追加
-        train_anno_list.append(anno_path) #listに追加
+        train_anno_list.append(anno_path.replace('COCO_train9999_', '')) #listに追加
+        #train_anno_list.append(anno_path) #listに追加
 
     #検証データの画像ファイルとアノテーションファイルへのパスリストを作成
     val_img_list = list()
